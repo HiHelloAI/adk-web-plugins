@@ -1,0 +1,25 @@
+/**
+ * Container Widget - Layout Styles
+ */
+
+.widget-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  &--vertical {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  &--horizontal {
+    flex-direction: row;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  &--grid {
+    display: grid;
+    gap: 2rem;
+  }
+}

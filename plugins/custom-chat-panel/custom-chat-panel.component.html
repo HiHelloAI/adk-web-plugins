@@ -1,0 +1,284 @@
+<!--
+ Copyright 2025 HiHelloAI (www.hihelloai.com)
+ shadcn-inspired compact dark theme chat panel
+-->
+
+@if (appName != "") {
+<!-- Top toggles bar -->
+<div class="chat-toggles" [attr.data-theme]="isDarkTheme() ? 'dark' : 'light'">
+  <button class="toggle-btn" (click)="toggleDemo()" [class.active]="isDemoMode()" [title]="isDemoMode() ? 'Exit Demo Mode' : 'Enter Demo Mode'">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="2" y="3" width="20" height="14" rx="2"/>
+      <path d="M8 21h8"/>
+      <path d="M12 17v4"/>
+    </svg>
+    <span>{{ isDemoMode() ? 'Exit Demo' : 'Demo' }}</span>
+  </button>
+
+  <button class="toggle-btn" (click)="toggleTheme()" [title]="isDarkTheme() ? 'Switch to Light Theme' : 'Switch to Dark Theme'">
+    @if (isDarkTheme()) {
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2"/>
+        <path d="M12 20v2"/>
+        <path d="m4.93 4.93 1.41 1.41"/>
+        <path d="m17.66 17.66 1.41 1.41"/>
+        <path d="M2 12h2"/>
+        <path d="M20 12h2"/>
+        <path d="m6.34 17.66-1.41 1.41"/>
+        <path d="m19.07 4.93-1.41 1.41"/>
+      </svg>
+    } @else {
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+      </svg>
+    }
+    <span>{{ isDarkTheme() ? 'Light' : 'Dark' }}</span>
+  </button>
+</div>
+
+<div #autoScroll class="chat-messages" [attr.data-theme]="isDarkTheme() ? 'dark' : 'light'">
+  <div #videoContainer></div>
+
+  @for (message of messages; track message; let i = $index) {
+  <div class="message-row" [class.message-row--user]="message.role === 'user'">
+
+    <!-- Avatar (Bot on left, User on right via flex-direction) -->
+    <div class="avatar"
+         [class.avatar--bot]="message.role === 'bot'"
+         [class.avatar--user]="message.role === 'user'"
+         (click)="clickEvent.emit(i)"
+         [title]="message.role === 'bot' ? getAgentNameFromEvent(i) : ''">
+      @if (message.role === 'bot') {
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 8V4H8"/>
+          <rect width="16" height="12" x="4" y="8" rx="2"/>
+          <path d="M2 14h2"/>
+          <path d="M20 14h2"/>
+          <path d="M15 13v2"/>
+          <path d="M9 13v2"/>
+        </svg>
+      } @else {
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      }
+    </div>
+
+    <!-- Message Content -->
+    <div class="message-content">
+
+      @if (!message.functionCall && !message.functionResponse) {
+        <div class="message-bubble"
+             [class.message-bubble--user]="message.role === 'user'"
+             [class.message-bubble--highlighted]="shouldMessageHighlighted(i)"
+             [class.message-bubble--streaming]="isStreamingMessage(i)"
+             [class.message-bubble--fail]="message.evalStatus === 2">
+
+          @if (message.isLoading) {
+            <div class="loading-dots">
+              <span></span><span></span><span></span>
+            </div>
+          }
+
+          @if (message.thought) {
+            <div class="badge badge--thought">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                <path d="M12 17h.01"/>
+              </svg>
+              {{ i18n.thoughtChipLabel }}
+            </div>
+          }
+
+          @if (message.text && isWidgetJson(message.text)) {
+            <!-- Render pure widget JSON from text field -->
+            <div class="prose">
+              <app-widget-renderer
+                [widget]="parseWidget(message.text)!"
+                [theme]="isDarkTheme() ? 'dark' : 'light'"
+                (widgetAction)="handleWidgetAction($event)" />
+            </div>
+          } @else if (message.text && hasMixedContent(message.text)) {
+            <!-- Render mixed content (text + JSON widgets) -->
+            @for (part of parseMessageParts(message.text); track $index) {
+              @if (part.type === 'text') {
+                <div class="prose">
+                  <ng-container [ngComponentOutlet]="markdownComponent"
+                                [ngComponentOutletInputs]="{text: getPartText(part), thought: message.thought, theme: isDarkTheme() ? 'dark' : 'light'}"></ng-container>
+                </div>
+              } @else if (part.type === 'widget') {
+                <div class="prose">
+                  <app-widget-renderer
+                    [widget]="getPartWidget(part)"
+                    [theme]="isDarkTheme() ? 'dark' : 'light'"
+                    (widgetAction)="handleWidgetAction($event)" />
+                </div>
+              }
+            }
+            @if (isStreamingMessage(i)) {
+              <span class="cursor">|</span>
+            }
+          } @else if (message.text) {
+            @if (message.isEditing) {
+              <div class="edit-box">
+                <textarea #messageTextarea class="edit-textarea"
+                          [ngModel]="userEditEvalCaseMessage"
+                          (ngModelChange)="userEditEvalCaseMessageChange.emit($event)"
+                          rows="3"
+                          (keydown)="handleKeydown.emit({event: $event, message: message})"></textarea>
+                <div class="edit-actions">
+                  <button class="btn btn--ghost" (click)="cancelEditMessage.emit(message)">Cancel</button>
+                  <button class="btn btn--primary" (click)="saveEditMessage.emit(message)">Save</button>
+                </div>
+              </div>
+            } @else {
+              <div class="prose">
+                <ng-container [ngComponentOutlet]="markdownComponent"
+                              [ngComponentOutletInputs]="{text: message.text!, thought: message.thought, theme: isDarkTheme() ? 'dark' : 'light'}"></ng-container>
+                @if (isStreamingMessage(i)) {
+                  <span class="cursor">|</span>
+                }
+              </div>
+            }
+          }
+
+          @if (message.inlineData && message.role === "bot") {
+            @if (message.inlineData.mediaType === MediaType.IMAGE) {
+              <img [src]="message.inlineData.data" alt="Generated" class="inline-image"
+                   (click)="openViewImageDialog.emit(message.inlineData.data)"/>
+            }
+            @if (message.inlineData.mediaType === MediaType.AUDIO) {
+              <app-audio-player [base64data]="message.inlineData.data"></app-audio-player>
+            }
+          }
+
+          @if (message.executableCode) {
+            <div class="code-block">
+              <div class="code-header">Executable Code</div>
+              <pre><code>{{ message.executableCode.code }}</code></pre>
+            </div>
+          }
+
+          @if (message.codeExecutionResult) {
+            <div class="result-box">
+              <div><strong>{{ i18n.outcomeLabel }}:</strong> {{ message.codeExecutionResult.outcome }}</div>
+              @if (message.codeExecutionResult.output) {
+                <pre class="result-output">{{ message.codeExecutionResult.output }}</pre>
+              }
+            </div>
+          }
+        </div>
+
+        @if (evalCase && message.role === "bot" && isEvalEditMode && !isEvalCaseEditing) {
+          <div class="actions">
+            <button class="icon-btn" (click)="editEvalCaseMessage.emit(message)" [title]="i18n.editEvalMessageTooltip">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+              </svg>
+            </button>
+            <button class="icon-btn" (click)="deleteEvalCaseMessage.emit({message: message, index: i})" [title]="i18n.deleteEvalMessageTooltip">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+              </svg>
+            </button>
+          </div>
+        }
+      }
+
+      @if (message.functionCall) {
+        <button class="function-badge function-badge--call" (click)="clickEvent.emit(i)"
+                [class.function-badge--highlighted]="shouldMessageHighlighted(i)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+          {{ message.functionCall.name }}
+        </button>
+      }
+
+      @if (message.functionResponse) {
+        <button class="function-badge function-badge--response" (click)="clickEvent.emit(i)"
+                [class.function-badge--highlighted]="shouldMessageHighlighted(i)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          {{ message.functionResponse.name }}
+        </button>
+      }
+
+      @if (message.evalStatus) {
+        <div class="badge" [class.badge--pass]="message.evalStatus === 1" [class.badge--fail]="message.evalStatus === 2">
+          {{ message.evalStatus === 1 ? i18n.evalPassLabel : i18n.evalFailLabel }}
+        </div>
+      }
+    </div>
+  </div>
+  }
+</div>
+}
+
+@if (appName != "" && isChatMode) {
+<div class="input-container" [attr.data-theme]="isDarkTheme() ? 'dark' : 'light'">
+  <input type="file" multiple hidden (change)="fileSelect.emit($event)" #fileInput />
+
+  @if (selectedFiles.length || updatedSessionState) {
+    <div class="attachments">
+      @for (file of selectedFiles; track file; let i = $index) {
+        <div class="attachment-chip">
+          @if (file.file.type.startsWith("image/")) {
+            <img [src]="file.url" alt="" class="attachment-thumb"/>
+          } @else {
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+          }
+          <span>{{ file.file.name }}</span>
+          <button (click)="removeFile.emit(i)" class="chip-remove">×</button>
+        </div>
+      }
+    </div>
+  }
+
+  <div class="input-box">
+    <textarea class="input" [ngModel]="userInput"
+              (ngModelChange)="userInputChange.emit($event)"
+              (keydown.enter)="sendMessage.emit($event)"
+              [placeholder]="i18n.typeMessagePlaceholder"
+              rows="1"></textarea>
+
+    <div class="input-actions">
+      <button class="icon-btn" (click)="fileInput.click()"
+              [disabled]="!(isMessageFileUploadEnabledObs | async)"
+              [title]="i18n.uploadFileTooltip">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+        </svg>
+      </button>
+
+      <button class="icon-btn" (click)="toggleAudioRecording.emit()"
+              [class.recording]="isAudioRecording"
+              [disabled]="!(isBidiStreamingEnabledObs | async)"
+              [title]="isAudioRecording ? i18n.turnOffMicTooltip : i18n.useMicTooltip">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" x2="12" y1="19" y2="22"/>
+        </svg>
+      </button>
+
+      <button class="icon-btn" (click)="toggleVideoRecording.emit()"
+              [class.recording]="isVideoRecording"
+              [disabled]="!(isBidiStreamingEnabledObs | async)"
+              [title]="isVideoRecording ? i18n.turnOffCamTooltip : i18n.useCamTooltip">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m22 8-6 4 6 4V8Z"/>
+          <rect width="14" height="12" x="2" y="6" rx="2" ry="2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+}

@@ -1,0 +1,22 @@
+<!--
+ Copyright 2025 HiHelloAI (www.hihelloai.com)
+-->
+
+<!-- Rating Widget Template -->
+<div class="widget-rating"
+     [class.widget-rating--large]="widget.size === 'large'"
+     [class.widget-rating--small]="widget.size === 'small'">
+  <div class="widget-rating__stars">
+    @for (star of [1,2,3,4,5]; track $index) {
+      <span class="widget-rating__star"
+            [class.widget-rating__star--filled]="star <= widget.value"
+            [class.widget-rating__star--half]="star > widget.value && star - 0.5 <= widget.value">
+        ★
+      </span>
+    }
+  </div>
+  <span class="widget-rating__value">{{ widget.value }}</span>
+  @if (widget.count) {
+    <span class="widget-rating__count">({{ widget.count }})</span>
+  }
+</div>

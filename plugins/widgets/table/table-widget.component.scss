@@ -1,0 +1,109 @@
+/**
+ * Table Widget - Structured data display
+ */
+
+.widget-table {
+  width: 100%;
+  margin: 1rem 0;
+  border-radius: var(--widget-radius);
+  overflow: hidden;
+  background: hsl(var(--widget-card));
+  border: 1px solid hsl(var(--widget-border));
+
+  &__title {
+    padding: 1rem 1.25rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: hsl(var(--widget-foreground));
+    border-bottom: 1px solid hsl(var(--widget-border));
+    background: hsl(var(--widget-muted) / 0.3);
+  }
+
+  &__wrapper {
+    overflow-x: auto;
+  }
+
+  &__element {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  &__header {
+    background: hsl(var(--widget-muted));
+    border-bottom: 2px solid hsl(var(--widget-border));
+  }
+
+  &__header-cell {
+    padding: 0.875rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: hsl(var(--widget-foreground));
+    white-space: nowrap;
+
+    &--center {
+      text-align: center;
+    }
+
+    &--right {
+      text-align: right;
+    }
+  }
+
+  &__row {
+    border-bottom: 1px solid hsl(var(--widget-border));
+    transition: background 150ms ease;
+
+    &:hover {
+      background: hsl(var(--widget-accent));
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__cell {
+    padding: 0.875rem 1rem;
+    color: hsl(var(--widget-foreground));
+
+    &--center {
+      text-align: center;
+    }
+
+    &--right {
+      text-align: right;
+    }
+  }
+
+  &--striped {
+    .widget-table__row:nth-child(even) {
+      background: hsl(var(--widget-muted) / 0.3);
+    }
+  }
+
+  &--compact {
+    .widget-table__header-cell,
+    .widget-table__cell {
+      padding: 0.5rem 0.75rem;
+    }
+  }
+
+  &--bordered {
+    .widget-table__cell {
+      border-right: 1px solid hsl(var(--widget-border));
+
+      &:last-child {
+        border-right: none;
+      }
+    }
+
+    .widget-table__header-cell {
+      border-right: 1px solid hsl(var(--widget-border));
+
+      &:last-child {
+        border-right: none;
+      }
+    }
+  }
+}

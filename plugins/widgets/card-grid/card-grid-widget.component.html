@@ -1,0 +1,38 @@
+<!--
+ Copyright 2025 HiHelloAI (www.hihelloai.com)
+-->
+
+<!-- Card Grid Widget Template -->
+<div class="widget-card-grid">
+  @if (widget.title) {
+    <h3 class="widget-card-grid__title">{{ widget.title }}</h3>
+  }
+  <div class="widget-card-grid__grid"
+       [class.widget-card-grid__grid--cols-2]="widget.columns === 2"
+       [class.widget-card-grid__grid--cols-3]="widget.columns === 3"
+       [class.widget-card-grid__grid--cols-4]="widget.columns === 4"
+       [class.widget-card-grid__grid--compact]="widget.compact">
+    @for (card of widget.cards; track card.id || $index) {
+      <div class="widget-card-grid__card">
+        @if (card.image) {
+          <img [src]="card.image" [alt]="card.title" class="widget-card-grid__image">
+        }
+        <div class="widget-card-grid__content">
+          @if (card.badge) {
+            <span class="widget-card-grid__badge">{{ card.badge }}</span>
+          }
+          <h4 class="widget-card-grid__title-text">{{ card.title }}</h4>
+          @if (card.description) {
+            <p class="widget-card-grid__description">{{ card.description }}</p>
+          }
+          @if (card.price) {
+            <div class="widget-card-grid__price">{{ card.price }}</div>
+          }
+          @if (card.cta) {
+            <button class="widget-card-grid__cta">{{ card.cta.text }}</button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

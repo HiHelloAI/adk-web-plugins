@@ -1,0 +1,197 @@
+<!--
+ Copyright 2025 HiHelloAI (www.hihelloai.com)
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<!-- Pricing Cards Widget Template -->
+
+<!-- Widget title and subtitle (left-aligned) -->
+@if (widget.title || widget.subtitle) {
+  <div class="widget-pricing-header">
+    @if (widget.title) {
+      <h2 class="widget-pricing-header__title">{{ widget.title }}</h2>
+    }
+    @if (widget.subtitle) {
+      <p class="widget-pricing-header__subtitle">{{ widget.subtitle }}</p>
+    }
+  </div>
+}
+
+@if (widget.tabs && widget.tabs.length > 0) {
+  <!-- Tabbed pricing with border box wrapper -->
+  <div class="widget-pricing-tabbed-wrapper">
+    <!-- Tabs -->
+    <div class="widget-pricing-tabs">
+      @for (tab of widget.tabs; track tab.id; let isFirst = $first) {
+        <button class="widget-pricing-tab"
+                [class.widget-pricing-tab--active]="isFirst"
+                [attr.data-tab]="tab.id"
+                (click)="onTabClick($event, widget.tabs, tab)">
+          {{ tab.label }}
+        </button>
+      }
+    </div>
+
+    <!-- Tab content containers -->
+    @for (tab of widget.tabs; track tab.id; let isFirst = $first) {
+      <div class="widget-pricing-container"
+           [class.widget-pricing-container--compact]="widget.layout === 'compact'"
+           [class.widget-pricing-container--wide]="widget.layout === 'wide'"
+           [attr.data-tab-group]="tab.id"
+           [attr.data-columns]="widget.columns"
+           [style.display]="isFirst ? 'grid' : 'none'"
+           [attr.data-theme]="theme">
+
+      @for (card of tab.cards; track card.id || $index) {
+        <div class="widget-pricing-card"
+             [class.widget-pricing-card--featured]="card.featured"
+             [class.widget-pricing-card--colorful]="card.colorful"
+             [class.widget-pricing-card--compact]="card.compact"
+             [attr.data-offer-id]="card.id"
+             [attr.data-offer-type]="card.metadata?.['offerType']">
+
+          @if (card.badge) {
+            <div class="widget-pricing-card__badge">{{ card.badge }}</div>
+          }
+
+          <div class="widget-pricing-card__header">
+            <h3 class="widget-pricing-card__title">{{ card.title }}</h3>
+
+            @if (card.price.originalAmount) {
+              <!-- Discounted price with strikethrough -->
+              <div class="widget-pricing-card__price-wrapper">
+                <div class="widget-pricing-card__original-price">
+                  <span class="widget-pricing-card__currency">{{ card.price.currency }}</span>
+                  <span class="widget-pricing-card__amount">{{ card.price.originalAmount }}</span>
+                  <span class="widget-pricing-card__period">{{ card.price.period }}</span>
+                  @if (card.price.discountBadge) {
+                    <span class="widget-pricing-card__discount-badge">{{ card.price.discountBadge }}</span>
+                  }
+                </div>
+                <div class="widget-pricing-card__price">
+                  <span class="widget-pricing-card__currency">{{ card.price.currency }}</span>
+                  <span class="widget-pricing-card__amount">{{ card.price.amount }}</span>
+                  <span class="widget-pricing-card__period">{{ card.price.period }}</span>
+                </div>
+              </div>
+            } @else {
+              <!-- Regular price -->
+              <div class="widget-pricing-card__price">
+                <span class="widget-pricing-card__currency">{{ card.price.currency }}</span>
+                <span class="widget-pricing-card__amount">{{ card.price.amount }}</span>
+                <span class="widget-pricing-card__period">{{ card.price.period }}</span>
+              </div>
+            }
+
+            @if (card.description) {
+              <p class="widget-pricing-card__description">{{ card.description }}</p>
+            }
+          </div>
+
+          <ul class="widget-pricing-card__features">
+            @for (feature of card.features; track $index) {
+              <li class="widget-pricing-card__feature"
+                  [class.widget-pricing-card__feature--disabled]="!feature.enabled">
+                {{ feature.text }}
+              </li>
+            }
+          </ul>
+
+          <a href="#"
+             class="widget-pricing-card__cta"
+             [attr.data-action]="card.cta.action"
+             [attr.data-id]="card.id"
+             (click)="onPricingCardClick($event, card)">
+            {{ card.cta.text }}
+          </a>
+        </div>
+      }
+    </div>
+  }
+  </div>
+
+} @else if (widget.cards && widget.cards.length > 0) {
+  <!-- Simple pricing cards (no tabs) -->
+  <div class="widget-pricing-container"
+       [class.widget-pricing-container--compact]="widget.layout === 'compact'"
+       [class.widget-pricing-container--wide]="widget.layout === 'wide'"
+       [attr.data-columns]="widget.columns"
+       [attr.data-theme]="theme">
+
+    @for (card of widget.cards; track card.id || $index) {
+      <div class="widget-pricing-card"
+           [class.widget-pricing-card--featured]="card.featured"
+           [class.widget-pricing-card--colorful]="card.colorful"
+           [class.widget-pricing-card--compact]="card.compact"
+           [attr.data-offer-id]="card.id"
+           [attr.data-offer-type]="card.metadata?.['offerType']">
+
+        @if (card.badge) {
+          <div class="widget-pricing-card__badge">{{ card.badge }}</div>
+        }
+
+        <div class="widget-pricing-card__header">
+          <h3 class="widget-pricing-card__title">{{ card.title }}</h3>
+
+          @if (card.price.originalAmount) {
+            <!-- Discounted price -->
+            <div class="widget-pricing-card__price-wrapper">
+              <div class="widget-pricing-card__original-price">
+                <span class="widget-pricing-card__currency">{{ card.price.currency }}</span>
+                <span class="widget-pricing-card__amount">{{ card.price.originalAmount }}</span>
+                <span class="widget-pricing-card__period">{{ card.price.period }}</span>
+                @if (card.price.discountBadge) {
+                  <span class="widget-pricing-card__discount-badge">{{ card.price.discountBadge }}</span>
+                }
+              </div>
+              <div class="widget-pricing-card__price">
+                <span class="widget-pricing-card__currency">{{ card.price.currency }}</span>
+                <span class="widget-pricing-card__amount">{{ card.price.amount }}</span>
+                <span class="widget-pricing-card__period">{{ card.price.period }}</span>
+              </div>
+            </div>
+          } @else {
+            <!-- Regular price -->
+            <div class="widget-pricing-card__price">
+              <span class="widget-pricing-card__currency">{{ card.price.currency }}</span>
+              <span class="widget-pricing-card__amount">{{ card.price.amount }}</span>
+              <span class="widget-pricing-card__period">{{ card.price.period }}</span>
+            </div>
+          }
+
+          @if (card.description) {
+            <p class="widget-pricing-card__description">{{ card.description }}</p>
+          }
+        </div>
+
+        <ul class="widget-pricing-card__features">
+          @for (feature of card.features; track $index) {
+            <li class="widget-pricing-card__feature"
+                [class.widget-pricing-card__feature--disabled]="!feature.enabled">
+              {{ feature.text }}
+            </li>
+          }
+        </ul>
+
+        <a href="#"
+           class="widget-pricing-card__cta"
+           [attr.data-action]="card.cta.action"
+           [attr.data-id]="card.id"
+           (click)="onPricingCardClick($event, card)">
+          {{ card.cta.text }}
+        </a>
+      </div>
+    }
+  </div>
+}

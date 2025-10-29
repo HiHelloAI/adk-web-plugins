@@ -1,0 +1,128 @@
+/**
+ * Card Grid Widget - Product/content cards
+ */
+
+.widget-card-grid {
+  margin: 1rem 0;
+
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: hsl(var(--widget-foreground));
+    margin: 0 0 1.5rem 0;
+  }
+
+  &__grid {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+
+    &--cols-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    &--cols-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    &--cols-4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    &--compact {
+      gap: 1rem;
+    }
+  }
+
+  &__card {
+    background: hsl(var(--widget-card));
+    border: 1px solid hsl(var(--widget-border));
+    border-radius: var(--widget-radius);
+    overflow: hidden;
+    transition: all 200ms ease;
+    cursor: pointer;
+
+    &:hover {
+      border-color: hsl(var(--widget-info));
+      box-shadow: 0 4px 12px hsl(0 0% 0% / 0.1);
+      transform: translateY(-2px);
+    }
+  }
+
+  &__image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: hsl(var(--widget-muted));
+  }
+
+  &__content {
+    padding: 1rem;
+    position: relative;
+  }
+
+  &__badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.25rem 0.625rem;
+    background: hsl(var(--widget-info));
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: calc(var(--widget-radius) - 2px);
+  }
+
+  &__title-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: hsl(var(--widget-foreground));
+    margin: 0 0 0.5rem 0;
+  }
+
+  &__description {
+    font-size: 0.875rem;
+    color: hsl(var(--widget-muted-foreground));
+    line-height: 1.5;
+    margin: 0 0 0.75rem 0;
+  }
+
+  &__price {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: hsl(var(--widget-primary));
+    margin: 0 0 0.75rem 0;
+  }
+
+  &__metadata {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.75rem 0;
+  }
+
+  &__meta-item {
+    font-size: 0.75rem;
+    color: hsl(var(--widget-muted-foreground));
+    padding: 0.25rem 0.5rem;
+    background: hsl(var(--widget-muted));
+    border-radius: calc(var(--widget-radius) - 2px);
+  }
+
+  &__cta {
+    width: 100%;
+    padding: 0.625rem;
+    background: hsl(var(--widget-info));
+    color: white;
+    border: none;
+    border-radius: calc(var(--widget-radius) - 2px);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 150ms ease;
+
+    &:hover {
+      background: hsl(217, 91%, 50%);
+    }
+  }
+}

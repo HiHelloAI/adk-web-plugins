@@ -1,0 +1,32 @@
+<div class="widget-timeline">
+  @if (widget.title) {
+    <h3 class="widget-timeline__title">{{ widget.title }}</h3>
+  }
+  <div class="widget-timeline__items">
+    @for (item of widget.items; track $index) {
+      <div class="widget-timeline__item"
+           [class.widget-timeline__item--completed]="item.status === 'completed'"
+           [class.widget-timeline__item--in_progress]="item.status === 'in_progress'">
+        <div class="widget-timeline__marker"
+             [class.widget-timeline__marker--pending]="item.status === 'pending'"
+             [class.widget-timeline__marker--in_progress]="item.status === 'in_progress'"
+             [class.widget-timeline__marker--completed]="item.status === 'completed'">
+          @if (item.icon) {
+            {{ item.icon }}
+          } @else if (item.status === 'completed') {
+            ✓
+          } @else {
+            {{ $index + 1 }}
+          }
+        </div>
+        <div class="widget-timeline__content">
+          <div class="widget-timeline__date">{{ item.date }}</div>
+          <h4 class="widget-timeline__item-title">{{ item.title }}</h4>
+          @if (item.description) {
+            <p class="widget-timeline__description">{{ item.description }}</p>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

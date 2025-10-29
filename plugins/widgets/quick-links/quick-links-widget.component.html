@@ -1,0 +1,99 @@
+<!--
+ Copyright 2025 HiHelloAI (www.hihelloai.com)
+-->
+
+<!-- Quick Links Widget Template -->
+@if (widget.card) {
+  <!-- Quick links wrapped in card -->
+  <div class="widget-quick-links-card" [attr.data-theme]="theme">
+    @if (widget.card.title) {
+      <h3 class="widget-quick-links-card__title">{{ widget.card.title }}</h3>
+    }
+    @if (widget.card.description) {
+      <p class="widget-quick-links-card__description">{{ widget.card.description }}</p>
+    }
+    <div class="widget-quick-links"
+         [class.widget-quick-links--grid]="widget.layout === 'grid'"
+         [class.widget-quick-links--column]="widget.layout === 'column'"
+         [class.widget-quick-links--center]="widget.layout === 'center'">
+      @for (link of widget.links; track $index) {
+        @if (widget.withIcons && link.description) {
+          <!-- Quick link with icon and description -->
+          <a href="#"
+             class="widget-quick-link-with-icon"
+             [attr.data-action]="link.action"
+             (click)="onQuickLinkClick($event, link)">
+            @if (link.icon) {
+              <div class="widget-quick-link-with-icon__icon">{{ link.icon }}</div>
+            }
+            <div class="widget-quick-link-with-icon__content">
+              <div class="widget-quick-link-with-icon__title">{{ link.text }}</div>
+              <div class="widget-quick-link-with-icon__description">{{ link.description }}</div>
+            </div>
+            <div class="widget-quick-link-with-icon__arrow">→</div>
+          </a>
+        } @else {
+          <!-- Standard quick link -->
+          <a href="#"
+             class="widget-quick-link"
+             [class.widget-quick-link--primary]="link.variant === 'primary'"
+             [class.widget-quick-link--success]="link.variant === 'success'"
+             [class.widget-quick-link--warning]="link.variant === 'warning'"
+             [class.widget-quick-link--small]="link.size === 'small'"
+             [class.widget-quick-link--large]="link.size === 'large'"
+             [class.widget-quick-link--full]="link.full"
+             [attr.data-action]="link.action"
+             (click)="onQuickLinkClick($event, link)">
+            @if (link.icon) {
+              <span class="widget-quick-link__icon">{{ link.icon }}</span>
+            }
+            {{ link.text }}
+          </a>
+        }
+      }
+    </div>
+  </div>
+} @else {
+  <!-- Quick links without card -->
+  <div class="widget-quick-links"
+       [class.widget-quick-links--grid]="widget.layout === 'grid'"
+       [class.widget-quick-links--column]="widget.layout === 'column'"
+       [class.widget-quick-links--center]="widget.layout === 'center'"
+       [attr.data-theme]="theme">
+    @for (link of widget.links; track $index) {
+      @if (widget.withIcons && link.description) {
+        <!-- Quick link with icon and description -->
+        <a href="#"
+           class="widget-quick-link-with-icon"
+           [attr.data-action]="link.action"
+           (click)="onQuickLinkClick($event, link)">
+          @if (link.icon) {
+            <div class="widget-quick-link-with-icon__icon">{{ link.icon }}</div>
+          }
+          <div class="widget-quick-link-with-icon__content">
+            <div class="widget-quick-link-with-icon__title">{{ link.text }}</div>
+            <div class="widget-quick-link-with-icon__description">{{ link.description }}</div>
+          </div>
+          <div class="widget-quick-link-with-icon__arrow">→</div>
+        </a>
+      } @else {
+        <!-- Standard quick link -->
+        <a href="#"
+           class="widget-quick-link"
+           [class.widget-quick-link--primary]="link.variant === 'primary'"
+           [class.widget-quick-link--success]="link.variant === 'success'"
+           [class.widget-quick-link--warning]="link.variant === 'warning'"
+           [class.widget-quick-link--small]="link.size === 'small'"
+           [class.widget-quick-link--large]="link.size === 'large'"
+           [class.widget-quick-link--full]="link.full"
+           [attr.data-action]="link.action"
+           (click)="onQuickLinkClick($event, link)">
+          @if (link.icon) {
+            <span class="widget-quick-link__icon">{{ link.icon }}</span>
+          }
+          {{ link.text }}
+        </a>
+      }
+    }
+  </div>
+}

@@ -1,0 +1,178 @@
+/**
+ * Alert Widget - Notifications and messages
+ */
+
+.widget-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  border-radius: var(--widget-radius);
+  border: 1px solid;
+  position: relative;
+
+  &__icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+  }
+
+  &__message {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  &__action-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    border-radius: calc(var(--widget-radius) - 1px);
+    border: 1px solid;
+    cursor: pointer;
+    transition: all 150ms ease;
+
+    &--primary {
+      background: hsl(var(--widget-info));
+      color: white;
+      border-color: hsl(var(--widget-info));
+
+      &:hover {
+        background: hsl(217, 91%, 50%);
+      }
+    }
+
+    &--success {
+      background: hsl(142, 71%, 45%);
+      color: white;
+      border-color: hsl(142, 71%, 45%);
+
+      &:hover {
+        background: hsl(142, 71%, 40%);
+      }
+    }
+
+    &--danger {
+      background: hsl(var(--widget-destructive));
+      color: white;
+      border-color: hsl(var(--widget-destructive));
+
+      &:hover {
+        background: hsl(0, 84%, 55%);
+      }
+    }
+
+    &--default {
+      background: transparent;
+      color: inherit;
+      border-color: currentColor;
+
+      &:hover {
+        background: hsl(var(--widget-accent));
+      }
+    }
+  }
+
+  &__dismiss {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    opacity: 0.5;
+    padding: 0.25rem;
+    line-height: 1;
+    font-size: 1.25rem;
+    transition: opacity 150ms ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  // Variants
+  &--info {
+    background: hsl(217, 91%, 60% / 0.1);
+    border-color: hsl(217, 91%, 60%);
+    color: hsl(217, 91%, 40%);
+
+    .widget-alert__icon {
+      color: hsl(217, 91%, 60%);
+    }
+  }
+
+  &--success {
+    background: hsl(142, 71%, 45% / 0.1);
+    border-color: hsl(142, 71%, 45%);
+    color: hsl(142, 71%, 30%);
+
+    .widget-alert__icon {
+      color: hsl(142, 71%, 45%);
+    }
+  }
+
+  &--warning {
+    background: hsl(38, 92%, 50% / 0.1);
+    border-color: hsl(38, 92%, 50%);
+    color: hsl(38, 92%, 30%);
+
+    .widget-alert__icon {
+      color: hsl(38, 92%, 50%);
+    }
+  }
+
+  &--error {
+    background: hsl(0, 84%, 60% / 0.1);
+    border-color: hsl(0, 84%, 60%);
+    color: hsl(0, 84%, 40%);
+
+    .widget-alert__icon {
+      color: hsl(0, 84%, 60%);
+    }
+  }
+}
+
+// Dark theme
+[data-theme="dark"] {
+  .widget-alert {
+    &--info {
+      background: hsl(217, 91%, 60% / 0.15);
+      color: hsl(217, 91%, 70%);
+    }
+
+    &--success {
+      background: hsl(142, 71%, 45% / 0.15);
+      color: hsl(142, 71%, 60%);
+    }
+
+    &--warning {
+      background: hsl(38, 92%, 50% / 0.15);
+      color: hsl(38, 92%, 60%);
+    }
+
+    &--error {
+      background: hsl(0, 84%, 60% / 0.15);
+      color: hsl(0, 84%, 70%);
+    }
+  }
+}

@@ -1,0 +1,36 @@
+<!--
+ Copyright 2025 HiHelloAI (www.hihelloai.com)
+-->
+
+<!-- Alert Widget Template -->
+<div class="widget-alert"
+     [class.widget-alert--info]="widget.variant === 'info'"
+     [class.widget-alert--success]="widget.variant === 'success'"
+     [class.widget-alert--warning]="widget.variant === 'warning'"
+     [class.widget-alert--error]="widget.variant === 'error'">
+  @if (widget.icon) {
+    <div class="widget-alert__icon">{{ widget.icon }}</div>
+  }
+  <div class="widget-alert__content">
+    @if (widget.title) {
+      <h4 class="widget-alert__title">{{ widget.title }}</h4>
+    }
+    <p class="widget-alert__message">{{ widget.message }}</p>
+    @if (widget.actions && widget.actions.length > 0) {
+      <div class="widget-alert__actions">
+        @for (action of widget.actions; track $index) {
+          <button class="widget-alert__action-btn"
+                  [class.widget-alert__action-btn--primary]="action.variant === 'primary'"
+                  [class.widget-alert__action-btn--success]="action.variant === 'success'"
+                  [class.widget-alert__action-btn--danger]="action.variant === 'danger'"
+                  [class.widget-alert__action-btn--default]="!action.variant || action.variant === 'default'">
+            {{ action.text }}
+          </button>
+        }
+      </div>
+    }
+  </div>
+  @if (widget.dismissible) {
+    <button class="widget-alert__dismiss">×</button>
+  }
+</div>

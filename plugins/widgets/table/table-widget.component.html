@@ -1,0 +1,42 @@
+<!--
+ Copyright 2025 HiHelloAI (www.hihelloai.com)
+-->
+
+<!-- Table Widget Template -->
+<div class="widget-table"
+     [class.widget-table--striped]="widget.striped"
+     [class.widget-table--compact]="widget.compact"
+     [class.widget-table--bordered]="widget.bordered">
+  @if (widget.title) {
+    <div class="widget-table__title">{{ widget.title }}</div>
+  }
+  <div class="widget-table__wrapper">
+    <table class="widget-table__element">
+      <thead class="widget-table__header">
+        <tr>
+          @for (col of widget.columns; track col.key) {
+            <th class="widget-table__header-cell"
+                [class.widget-table__header-cell--center]="col.align === 'center'"
+                [class.widget-table__header-cell--right]="col.align === 'right'"
+                [style.width]="col.width">
+              {{ col.label }}
+            </th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of widget.rows; track $index) {
+          <tr class="widget-table__row">
+            @for (col of widget.columns; track col.key) {
+              <td class="widget-table__cell"
+                  [class.widget-table__cell--center]="col.align === 'center'"
+                  [class.widget-table__cell--right]="col.align === 'right'">
+                {{ row[col.key] }}
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,26 @@
+# Node modules (if package gets dependencies)
+node_modules/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build artifacts (if building the package)
+dist/
+build/
+*.log
+
+# Backup files
+*.backup.*

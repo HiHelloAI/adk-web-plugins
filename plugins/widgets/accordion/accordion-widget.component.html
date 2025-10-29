@@ -1,0 +1,21 @@
+<div class="widget-accordion">
+  @if (widget.title) {
+    <h3 class="widget-accordion__title">{{ widget.title }}</h3>
+  }
+  <div class="widget-accordion__items">
+    @for (item of widget.items; track item.id || $index) {
+      <div class="widget-accordion__item">
+        <button class="widget-accordion__header" (click)="toggleItem(item)">
+          @if (item.icon) {
+            <span class="widget-accordion__icon">{{ item.icon }}</span>
+          }
+          <span>{{ item.title }}</span>
+          <span class="widget-accordion__arrow" [class.widget-accordion__arrow--expanded]="item.expanded">▼</span>
+        </button>
+        @if (item.expanded) {
+          <div class="widget-accordion__content">{{ item.content }}</div>
+        }
+      </div>
+    }
+  </div>
+</div>

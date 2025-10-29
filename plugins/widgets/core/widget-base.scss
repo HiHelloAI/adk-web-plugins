@@ -1,0 +1,655 @@
+/**
+ * Widget Styles for Assistant Messages
+ * Backend can send HTML with these CSS classes for rich formatting
+ * shadcn-inspired dark theme design system
+ */
+
+// ============================================================================
+// COLOR PALETTE
+// ============================================================================
+
+// Light Theme (default)
+:root {
+  --widget-background: 0 0% 100%;
+  --widget-foreground: 0 0% 10%;
+  --widget-muted: 0 0% 96%;
+  --widget-muted-foreground: 0 0% 40%;
+  --widget-border: 0 0% 85%;
+  --widget-input: 0 0% 96%;
+  --widget-card: 0 0% 98%;
+  --widget-primary: 222.2 47.4% 11.2%;
+  --widget-primary-foreground: 210 40% 98%;
+  --widget-accent: 0 0% 96%;
+  --widget-destructive: 0 84.2% 60.2%;
+  --widget-success: 142 71% 45%;
+  --widget-warning: 38 92% 50%;
+  --widget-info: 217 91% 60%;
+  --widget-radius: 0.5rem;
+}
+
+// Dark Theme
+[data-theme="dark"] {
+  --widget-background: 0 0% 7%;
+  --widget-foreground: 213 31% 91%;
+  --widget-muted: 0 0% 12%;
+  --widget-muted-foreground: 215.4 16.3% 56.9%;
+  --widget-border: 0 0% 20%;
+  --widget-input: 0 0% 15%;
+  --widget-card: 0 0% 10%;
+  --widget-primary: 210 40% 98%;
+  --widget-primary-foreground: 222.2 47.4% 11.2%;
+  --widget-accent: 0 0% 15%;
+  --widget-destructive: 0 63% 31%;
+  --widget-success: 142 71% 45%;
+  --widget-warning: 38 92% 50%;
+  --widget-info: 217 91% 60%;
+}
+
+// ============================================================================
+// WIDGET ROOT CONTAINER
+// ============================================================================
+
+.widget-root {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+// ============================================================================
+// TYPOGRAPHY
+// ============================================================================
+
+.widget-heading {
+  font-weight: 600;
+  color: hsl(var(--widget-primary));
+  margin: 0 0 0.75rem 0;
+  line-height: 1.3;
+
+  &--h1 {
+    font-size: 1.5rem;
+    border-bottom: 1px solid hsl(var(--widget-border));
+    padding-bottom: 0.5rem;
+  }
+
+  &--h2 {
+    font-size: 1.25rem;
+  }
+
+  &--h3 {
+    font-size: 1.125rem;
+  }
+
+  &--h4 {
+    font-size: 1rem;
+  }
+}
+
+.widget-text {
+  color: hsl(var(--widget-foreground));
+  line-height: 1.6;
+  margin: 0 0 0.75rem 0;
+
+  &--muted {
+    color: hsl(var(--widget-muted-foreground));
+  }
+
+  &--small {
+    font-size: 0.875rem;
+  }
+
+  &--large {
+    font-size: 1.125rem;
+  }
+}
+
+.widget-link {
+  color: hsl(var(--widget-info));
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 150ms;
+
+  &:hover {
+    text-decoration-color: currentColor;
+  }
+}
+
+// ============================================================================
+// CONTAINERS
+// ============================================================================
+
+.widget-card {
+  padding: 1rem;
+  border-radius: var(--widget-radius);
+  border: 1px solid hsl(var(--widget-border));
+  background: hsl(var(--widget-muted));
+  margin: 0.75rem 0;
+
+  &--compact {
+    padding: 0.75rem;
+  }
+
+  &--spacious {
+    padding: 1.5rem;
+  }
+}
+
+.widget-box {
+  padding: 0.75rem 1rem;
+  border-radius: var(--widget-radius);
+  border: 1px solid hsl(var(--widget-border));
+  margin: 0.5rem 0;
+
+  &--info {
+    background: hsl(var(--widget-info) / 0.1);
+    border-color: hsl(var(--widget-info) / 0.3);
+    color: hsl(var(--widget-info) / 0.9);
+  }
+
+  &--success {
+    background: hsl(var(--widget-success) / 0.1);
+    border-color: hsl(var(--widget-success) / 0.3);
+    color: hsl(var(--widget-success) / 0.9);
+  }
+
+  &--warning {
+    background: hsl(var(--widget-warning) / 0.1);
+    border-color: hsl(var(--widget-warning) / 0.3);
+    color: hsl(var(--widget-warning) / 0.9);
+  }
+
+  &--error {
+    background: hsl(var(--widget-destructive) / 0.1);
+    border-color: hsl(var(--widget-destructive) / 0.3);
+    color: hsl(0, 63%, 60%);
+  }
+}
+
+.widget-section {
+  margin: 1rem 0;
+
+  &--divider {
+    border-top: 1px solid hsl(var(--widget-border));
+    padding-top: 1rem;
+  }
+}
+
+// ============================================================================
+// LISTS
+// ============================================================================
+
+.widget-list {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+  color: hsl(var(--widget-foreground));
+
+  li {
+    margin: 0.375rem 0;
+    line-height: 1.6;
+  }
+
+  &--unstyled {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  &--compact {
+    li {
+      margin: 0.25rem 0;
+    }
+  }
+}
+
+.widget-list-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: calc(var(--widget-radius) - 2px);
+  transition: background 150ms;
+
+  &:hover {
+    background: hsl(var(--widget-accent));
+  }
+
+  &--interactive {
+    cursor: pointer;
+
+    &:hover {
+      background: hsl(var(--widget-accent));
+    }
+  }
+}
+
+// ============================================================================
+// CODE BLOCKS
+// ============================================================================
+
+.widget-code {
+  background: hsl(var(--widget-accent));
+  color: hsl(142, 71%, 60%);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+  font-size: 0.875rem;
+}
+
+.widget-code-block {
+  background: hsl(var(--widget-accent));
+  border: 1px solid hsl(var(--widget-border));
+  border-radius: var(--widget-radius);
+  overflow: hidden;
+  margin: 0.75rem 0;
+
+  pre {
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+    font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: hsl(var(--widget-foreground));
+
+    code {
+      background: transparent;
+      padding: 0;
+      color: inherit;
+    }
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: hsl(var(--widget-muted));
+    border-bottom: 1px solid hsl(var(--widget-border));
+    font-size: 0.75rem;
+    color: hsl(var(--widget-muted-foreground));
+  }
+}
+
+// ============================================================================
+// BADGES & TAGS
+// ============================================================================
+
+.widget-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: calc(var(--widget-radius) - 2px);
+  background: hsl(var(--widget-muted));
+  color: hsl(var(--widget-foreground));
+  border: 1px solid hsl(var(--widget-border));
+
+  &--primary {
+    background: hsl(var(--widget-info) / 0.15);
+    color: hsl(var(--widget-info));
+    border-color: hsl(var(--widget-info) / 0.3);
+  }
+
+  &--success {
+    background: hsl(var(--widget-success) / 0.15);
+    color: hsl(var(--widget-success));
+    border-color: hsl(var(--widget-success) / 0.3);
+  }
+
+  &--warning {
+    background: hsl(var(--widget-warning) / 0.15);
+    color: hsl(var(--widget-warning));
+    border-color: hsl(var(--widget-warning) / 0.3);
+  }
+
+  &--error {
+    background: hsl(var(--widget-destructive) / 0.15);
+    color: hsl(0, 63%, 60%);
+    border-color: hsl(var(--widget-destructive) / 0.3);
+  }
+}
+
+// ============================================================================
+// TABLES
+// ============================================================================
+
+.widget-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin: 1rem 0;
+  font-size: 0.875rem;
+  border: 1px solid hsl(var(--widget-border));
+  border-radius: var(--widget-radius);
+  overflow: hidden;
+
+  thead {
+    background: hsl(var(--widget-muted));
+
+    th {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: hsl(var(--widget-primary));
+      border-bottom: 1px solid hsl(var(--widget-border));
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid hsl(var(--widget-border));
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &:hover {
+        background: hsl(var(--widget-accent));
+      }
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      color: hsl(var(--widget-foreground));
+    }
+  }
+
+  &--compact {
+    th, td {
+      padding: 0.5rem 0.75rem;
+    }
+  }
+}
+
+// ============================================================================
+// BUTTONS
+// ============================================================================
+
+.widget-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: var(--widget-radius);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 150ms ease;
+  text-decoration: none;
+
+  &--primary {
+    background: hsl(var(--widget-info));
+    color: white;
+
+    &:hover {
+      background: hsl(217, 91%, 50%);
+    }
+  }
+
+  &--secondary {
+    background: hsl(var(--widget-muted));
+    color: hsl(var(--widget-foreground));
+    border-color: hsl(var(--widget-border));
+
+    &:hover {
+      background: hsl(var(--widget-accent));
+    }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: hsl(var(--widget-foreground));
+
+    &:hover {
+      background: hsl(var(--widget-accent));
+    }
+  }
+
+  &--small {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8125rem;
+  }
+
+  &--large {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+// ============================================================================
+// GRID & LAYOUT
+// ============================================================================
+
+.widget-grid {
+  display: grid;
+  gap: 1rem;
+  margin: 1rem 0;
+
+  &--2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  &--3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  &--4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    &--2, &--3, &--4 {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+.widget-flex {
+  display: flex;
+  gap: 0.75rem;
+
+  &--column {
+    flex-direction: column;
+  }
+
+  &--center {
+    align-items: center;
+    justify-content: center;
+  }
+
+  &--between {
+    justify-content: space-between;
+  }
+
+  &--wrap {
+    flex-wrap: wrap;
+  }
+}
+
+// ============================================================================
+// DIVIDERS
+// ============================================================================
+
+.widget-divider {
+  height: 1px;
+  background: hsl(var(--widget-border));
+  margin: 1rem 0;
+
+  &--dashed {
+    border-top: 1px dashed hsl(var(--widget-border));
+    height: 0;
+  }
+
+  &--thick {
+    height: 2px;
+  }
+}
+
+// ============================================================================
+// IMAGES & MEDIA
+// ============================================================================
+
+.widget-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--widget-radius);
+  border: 1px solid hsl(var(--widget-border));
+  margin: 0.75rem 0;
+
+  &--rounded {
+    border-radius: 50%;
+  }
+
+  &--small {
+    max-width: 200px;
+  }
+
+  &--medium {
+    max-width: 400px;
+  }
+}
+
+// ============================================================================
+// PROGRESS INDICATORS
+// ============================================================================
+
+.widget-progress {
+  width: 100%;
+  height: 8px;
+  background: hsl(var(--widget-muted));
+  border-radius: var(--widget-radius);
+  overflow: hidden;
+  margin: 0.5rem 0;
+
+  &__bar {
+    height: 100%;
+    background: hsl(var(--widget-info));
+    transition: width 300ms ease;
+  }
+
+  &--success &__bar {
+    background: hsl(var(--widget-success));
+  }
+
+  &--warning &__bar {
+    background: hsl(var(--widget-warning));
+  }
+
+  &--error &__bar {
+    background: hsl(var(--widget-destructive));
+  }
+}
+
+// ============================================================================
+// BLOCKQUOTES
+// ============================================================================
+
+.widget-blockquote {
+  border-left: 3px solid hsl(var(--widget-border));
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: hsl(var(--widget-muted-foreground));
+  font-style: italic;
+
+  &--accent {
+    border-left-color: hsl(var(--widget-info));
+    color: hsl(var(--widget-foreground));
+  }
+}
+
+// ============================================================================
+// UTILITIES
+// ============================================================================
+
+.widget-spacing {
+  &--xs { margin: 0.25rem 0; }
+  &--sm { margin: 0.5rem 0; }
+  &--md { margin: 0.75rem 0; }
+  &--lg { margin: 1rem 0; }
+  &--xl { margin: 1.5rem 0; }
+}
+
+.widget-text-align {
+  &--left { text-align: left; }
+  &--center { text-align: center; }
+  &--right { text-align: right; }
+}
+
+.widget-font-weight {
+  &--light { font-weight: 300; }
+  &--normal { font-weight: 400; }
+  &--medium { font-weight: 500; }
+  &--semibold { font-weight: 600; }
+  &--bold { font-weight: 700; }
+}
+
+// ============================================================================
+// TEXT WIDGET
+// ============================================================================
+
+.widget-text-content {
+  width: 100%;
+  color: hsl(var(--widget-foreground));
+
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+    color: hsl(var(--widget-primary));
+  }
+
+  p {
+    margin: 0 0 0.75rem 0;
+    line-height: 1.6;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// ============================================================================
+// CONTAINER WIDGET
+// ============================================================================
+
+.widget-container {
+  width: 100%;
+
+  &--vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &--horizontal {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  &--grid {
+    display: grid;
+    gap: 1rem;
+  }
+}
+
+// ============================================================================
+// CUSTOM WIDGET STYLES MOVED TO INDIVIDUAL COMPONENT FILES
+// ============================================================================
+// Individual widgets now have their own SCSS files in their directories:
+// - pricing-cards/pricing-cards.component.scss
+// - form/form-widget.component.scss
+// - quick-links/quick-links.component.scss
+// - popup/popup-widget.component.scss
+// - table/table-widget.component.scss
+// - alert/alert-widget.component.scss
+// - progress/progress-widget.component.scss
+// - card-grid/card-grid-widget.component.scss
+// - accordion/accordion-widget.component.scss
+// These are loaded via styleUrls in widget-renderer.component.ts

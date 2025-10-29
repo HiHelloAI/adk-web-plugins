@@ -1,0 +1,55 @@
+{
+  "name": "adk-web-plugins",
+  "version": "1.0.0",
+  "description": "Extensible plugin system for Google ADK Web providing custom UI components and 13+ interactive widgets for building rich AI agent interfaces",
+  "main": "plugins/index.ts",
+  "scripts": {
+    "install": "node install-plugin.js",
+    "verify": "bash verify-plugin.sh",
+    "extract-widgets": "bash extract-widgets.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/adk-web-plugins.git"
+  },
+  "bugs": {
+    "url": "https://github.com/YOUR_USERNAME/adk-web-plugins/issues"
+  },
+  "homepage": "https://github.com/YOUR_USERNAME/adk-web-plugins#readme",
+  "keywords": [
+    "adk",
+    "adk-web",
+    "google-adk",
+    "agent-development-kit",
+    "plugins",
+    "widgets",
+    "angular",
+    "typescript",
+    "ui-components",
+    "chat-interface",
+    "ai-agents",
+    "forms",
+    "pricing-cards",
+    "interactive-widgets"
+  ],
+  "author": "HiHelloAI <contact@hihelloai.com>",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "peerDependencies": {
+    "@angular/core": "^19.0.0",
+    "@angular/common": "^19.0.0",
+    "@angular/material": "^19.0.0"
+  },
+  "files": [
+    "plugins/",
+    "assets/",
+    "install-plugin.js",
+    "verify-plugin.sh",
+    "extract-widgets.sh",
+    "README.md",
+    "CONTRIBUTING.md",
+    "LICENSE"
+  ]
+}

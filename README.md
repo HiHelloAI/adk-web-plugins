@@ -1,0 +1,619 @@
+# ADK Web Plugins
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Angular](https://img.shields.io/badge/Angular-19.x-red.svg)](https://angular.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
+
+> Extensible plugin system for [Google ADK Web](https://github.com/google/adk-web) providing custom UI components and 13+ interactive widgets for building rich AI agent interfaces.
+
+<div align="center">
+  <img src="assets/adk-web-plugins.gif" alt="ADK Web Plugins Demo" width="800"/>
+  <p><em>Interactive widgets in action - Forms, Pricing Cards, Alerts, and more</em></p>
+</div>
+
+## Overview
+
+ADK Web Plugins is an external plugin package designed to enhance [ADK Web](https://github.com/google/adk-web) - Google's Agent Development Kit integrated developer interface. This package provides:
+
+- **Custom Chat Panel** - Enhanced dark-themed chat interface with improved UX
+- **Custom Markdown Renderer** - Specialized markdown rendering with ADK marker support
+- **Widget System** - 13 pre-built interactive widgets (forms, pricing cards, alerts, and more)
+- **Easy Installation** - Automated plugin installation with backup and rollback support
+- **Type-Safe Integration** - Full TypeScript support for all components
+
+## Features
+
+### Custom UI Components
+
+| Component | Description |
+|-----------|-------------|
+| **Custom Chat Panel** | Enhanced dark-themed chat interface with widget support, markdown rendering, and improved message handling |
+| **Custom Markdown** | Advanced markdown renderer that strips ADK markers and provides consistent styling |
+
+### Interactive Widgets (14 total)
+
+| Widget | Use Case | Interactive |
+|--------|----------|-------------|
+| **Accordion** | FAQs, collapsible content sections | ✓ |
+| **Alert** | Success/error/warning notifications | ✓ |
+| **Card Grid** | Product listings, portfolios, content galleries | ✓ |
+| **Carousel** | Image galleries, testimonials, slideshows | - |
+| **Cart** | Shopping cart with items, pricing, checkout | ✓ |
+| **Container** | Layout management, widget composition | - |
+| **Form** | User input, surveys, data collection | ✓ |
+| **Popup** | Modal dialogs, confirmations, nested content | ✓ |
+| **Pricing Cards** | Subscription tiers, plans, product pricing | ✓ |
+| **Quick Links** | Navigation shortcuts, CTAs, action buttons | ✓ |
+| **Rating** | Star ratings, reviews, scores | ✓ |
+| **Table** | Structured data display, comparisons | - |
+| **Text** | Rich HTML content, formatted text | - |
+| **Timeline** | Event history, progress tracking, chronology | - |
+
+View detailed widget documentation in the [Widget System README](plugins/widgets/README.md).
+
+## Visual Showcase
+
+### Pricing Cards with Tabs
+<img src="assets/pricing-cards-demo.gif" alt="Pricing Cards Widget" width="700"/>
+
+### Interactive Forms
+<img src="assets/form-demo.gif" alt="Form Widget" width="700"/>
+
+### Widget Gallery
+<img src="assets/widget-gallery.gif" alt="All Widgets Demo" width="700"/>
+
+## Installation
+
+### Prerequisites
+
+- Node.js 18 or higher
+- A local installation of [ADK Web](https://github.com/google/adk-web)
+- Basic knowledge of Angular 19+ and TypeScript
+
+### Quick Start
+
+1. **Clone this repository:**
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/adk-web-plugins.git
+   cd adk-web-plugins
+   ```
+
+2. **Install plugins into your ADK Web project:**
+   ```bash
+   node install-plugin.js /path/to/adk-web
+   ```
+
+3. **Verify installation:**
+   ```bash
+   ./verify-plugin.sh /path/to/adk-web
+   ```
+
+4. **Start ADK Web:**
+   ```bash
+   cd /path/to/adk-web
+   npm run serve --backend=http://localhost:8000
+   ```
+
+### What the Installation Does
+
+The `install-plugin.js` script automatically:
+
+1. **Copies plugin files** → `src/app/plugins/`
+2. **Updates main.ts** → Adds plugin provider imports and registration
+3. **Updates styles.scss** → Includes widget base styles
+4. **Updates chat.component.ts** → Integrates CustomChatPanelComponent
+
+**Backups are created before all modifications:**
+- `src/app/plugins.backup.[timestamp]/`
+- `src/main.ts.backup.[timestamp]`
+- `src/styles.scss.backup.[timestamp]`
+- `src/app/components/chat/chat.component.ts.backup.[timestamp]`
+
+### Manual Installation
+
+If you prefer manual installation or need more control:
+
+<details>
+<summary>Show manual installation steps</summary>
+
+1. **Copy plugin files:**
+   ```bash
+   cp -r plugins/* /path/to/adk-web/src/app/plugins/
+   ```
+
+2. **Update `src/main.ts`:**
+   ```typescript
+   import {getPluginProviders} from './app/plugins';
+
+   bootstrapApplication(AppComponent, {
+     providers: [
+       // ... existing providers
+       ...getPluginProviders(),
+     ]
+   })
+   ```
+
+3. **Update `src/styles.scss`:**
+   ```scss
+   @import './app/plugins/widgets/core/widget-base.scss';
+   ```
+
+4. **Update `src/app/components/chat/chat.component.ts`:**
+   ```typescript
+   // Add import
+   import {CustomChatPanelComponent} from '../../plugins/custom-chat-panel/custom-chat-panel.component';
+
+   // Add to @Component imports array
+   @Component({
+     imports: [
+       // ... other imports
+       CustomChatPanelComponent,
+     ]
+   })
+
+   // Update viewChild
+   chatPanel = viewChild.required(CustomChatPanelComponent);
+   ```
+
+</details>
+
+## Usage
+
+### Using Widgets in Your Agent
+
+Widgets are sent as JSON strings from your backend agent. Here are examples in different languages:
+
+#### Python Example
+
+```python
+from adk import Agent
+import json
+
+class MyAgent(Agent):
+    def process(self, user_input: str):
+        # Create a pricing card widget
+        widget = {
+            "type": "pricing-cards",
+            "title": "Choose Your Plan",
+            "columns": 3,
+            "cards": [
+                {
+                    "id": "basic",
+                    "title": "Basic",
+                    "price": {
+                        "currency": "$",
+                        "amount": "9.99",
+                        "period": "/mo"
+                    },
+                    "features": [
+                        {"text": "10 GB Storage", "enabled": True},
+                        {"text": "Basic Support", "enabled": True}
+                    ],
+                    "cta": {"text": "Select Plan"}
+                }
+            ]
+        }
+
+        return {
+            "role": "bot",
+            "text": json.dumps(widget)
+        }
+```
+
+#### Java Example
+
+```java
+import com.google.gson.Gson;
+import java.util.*;
+
+public class MyAgent extends Agent {
+    private final Gson gson = new Gson();
+
+    @Override
+    public Response process(String userInput) {
+        // Create a form widget
+        Map<String, Object> widget = Map.of(
+            "type", "form",
+            "title", "Contact Us",
+            "fields", List.of(
+                Map.of(
+                    "type", "text",
+                    "name", "name",
+                    "label", "Full Name",
+                    "required", true
+                ),
+                Map.of(
+                    "type", "email",
+                    "name", "email",
+                    "label", "Email Address",
+                    "required", true
+                )
+            ),
+            "submitText", "Send Message"
+        );
+
+        return Response.builder()
+            .content(gson.toJson(widget))
+            .build();
+    }
+}
+```
+
+#### JavaScript/Node.js Example
+
+```javascript
+class MyAgent {
+  process(userInput) {
+    // Create an alert widget
+    const widget = {
+      type: "alert",
+      variant: "success",
+      title: "Success!",
+      message: "Your operation completed successfully",
+      icon: "✅"
+    };
+
+    return {
+      role: "bot",
+      text: JSON.stringify(widget)
+    };
+  }
+}
+```
+
+### Widget Examples
+
+#### Pricing Cards with Tabs and Discounts
+
+```json
+{
+  "type": "pricing-cards",
+  "title": "Choose Your Perfect Plan",
+  "subtitle": "Flexible pricing that grows with your business",
+  "columns": 3,
+  "tabs": [
+    {
+      "id": "monthly",
+      "label": "Monthly Billing",
+      "cards": [
+        {
+          "id": "pro_monthly",
+          "title": "Professional",
+          "description": "For growing teams",
+          "badge": "Most Popular",
+          "featured": true,
+          "price": {
+            "currency": "$",
+            "amount": "79",
+            "period": "/month"
+          },
+          "features": [
+            {"text": "100 GB Storage", "enabled": true},
+            {"text": "25 Team Members", "enabled": true},
+            {"text": "Priority Support", "enabled": true}
+          ],
+          "cta": {"text": "Start Free Trial"}
+        }
+      ]
+    },
+    {
+      "id": "yearly",
+      "label": "Yearly Billing (Save 25%)",
+      "cards": [
+        {
+          "id": "pro_yearly",
+          "title": "Professional",
+          "description": "For growing teams",
+          "badge": "Best Value",
+          "featured": true,
+          "price": {
+            "currency": "$",
+            "amount": "59",
+            "period": "/month",
+            "originalAmount": "79",
+            "discountBadge": "Save 25%"
+          },
+          "features": [
+            {"text": "100 GB Storage", "enabled": true},
+            {"text": "25 Team Members", "enabled": true},
+            {"text": "Priority Support", "enabled": true}
+          ],
+          "cta": {"text": "Subscribe Yearly"}
+        }
+      ]
+    }
+  ]
+}
+```
+
+#### Interactive Form
+
+```json
+{
+  "type": "form",
+  "title": "Get Started",
+  "description": "Fill out this form to create your account",
+  "fields": [
+    {
+      "type": "text",
+      "name": "fullName",
+      "label": "Full Name",
+      "required": true,
+      "placeholder": "John Doe"
+    },
+    {
+      "type": "email",
+      "name": "email",
+      "label": "Email Address",
+      "required": true,
+      "helperText": "We'll never share your email"
+    },
+    {
+      "type": "select",
+      "name": "plan",
+      "label": "Choose Plan",
+      "options": [
+        {"value": "basic", "label": "Basic"},
+        {"value": "pro", "label": "Professional"}
+      ]
+    }
+  ],
+  "submitText": "Create Account",
+  "actionsAlign": "right"
+}
+```
+
+For more widget examples, see the [Widget System Documentation](plugins/widgets/README.md).
+
+## Project Structure
+
+```
+adk-web-plugins/
+├── plugins/                          # Plugin source files
+│   ├── custom-chat-panel/           # Enhanced chat interface
+│   │   ├── custom-chat-panel.component.ts
+│   │   ├── custom-chat-panel.component.html
+│   │   ├── custom-chat-panel.component.scss
+│   │   └── custom-markdown.component.ts
+│   ├── widgets/                     # Widget system
+│   │   ├── core/                    # Core widget infrastructure
+│   │   │   ├── widget-models.ts    # Type definitions
+│   │   │   ├── widget-renderer.component.ts
+│   │   │   ├── widget-base.scss    # Shared styles
+│   │   │   └── widget-demo-data.ts # Demo examples
+│   │   ├── pricing-cards/          # Individual widgets...
+│   │   ├── form/
+│   │   ├── alert/
+│   │   └── ... (13 widget types)
+│   ├── index.ts                     # Plugin exports
+│   └── plugin-registry.ts           # Plugin registration
+├── install-plugin.js                # Automated installer
+├── verify-plugin.sh                 # Installation verifier
+├── extract-widgets.sh               # Widget discovery tool
+├── package.json                     # Package metadata
+├── LICENSE                          # Apache 2.0 License
+├── README.md                        # This file
+└── CONTRIBUTING.md                  # Contribution guidelines
+```
+
+## Configuration
+
+### Plugin Registry
+
+The plugin system uses a centralized registry in [plugins/plugin-registry.ts](plugins/plugin-registry.ts). To add new plugins:
+
+```typescript
+export function getPluginProviders(): Provider[] {
+  const providers: Provider[] = [];
+
+  // Register your custom component
+  providers.push({
+    provide: SomeADKComponent,
+    useClass: YourCustomComponent,
+  });
+
+  return providers;
+}
+```
+
+### Widget Customization
+
+To customize widget appearance, modify [plugins/widgets/core/widget-base.scss](plugins/widgets/core/widget-base.scss). Available CSS variables:
+
+```scss
+.widget-root {
+  --widget-background: hsl(var(--background));
+  --widget-foreground: hsl(var(--foreground));
+  --widget-primary: hsl(var(--primary));
+  --widget-border: hsl(var(--border));
+  --widget-radius: 8px;
+  --widget-spacing-sm: 8px;
+  --widget-spacing-md: 16px;
+  // ... more variables
+}
+```
+
+## Troubleshooting
+
+### Common Issues
+
+<details>
+<summary><b>Build Error: "Multiple components match"</b></summary>
+
+Ensure only `CustomChatPanelComponent` is in the @Component imports array, not `ChatPanelComponent`.
+
+**Fix:**
+```typescript
+@Component({
+  imports: [
+    CustomChatPanelComponent,  // ✓ Correct
+    // ChatPanelComponent,     // ✗ Remove this
+  ]
+})
+```
+</details>
+
+<details>
+<summary><b>Build Error: "Child query result is required"</b></summary>
+
+Update the viewChild reference from `ChatPanelComponent` to `CustomChatPanelComponent`.
+
+**Fix:**
+```typescript
+// Before
+chatPanel = viewChild.required(ChatPanelComponent);
+
+// After
+chatPanel = viewChild.required(CustomChatPanelComponent);
+```
+</details>
+
+<details>
+<summary><b>Widgets not rendering</b></summary>
+
+- Verify widget type matches exactly (case-sensitive)
+- Check data structure matches widget model interface
+- Ensure JSON is valid (use [JSONLint](https://jsonlint.com/))
+- Check browser console for errors
+</details>
+
+<details>
+<summary><b>Plugin installation fails</b></summary>
+
+Run the verification script to diagnose issues:
+
+```bash
+./verify-plugin.sh /path/to/adk-web
+```
+
+Check that:
+- ADK Web path is correct
+- `src/main.ts` exists
+- You have write permissions
+</details>
+
+## Verification & Testing
+
+### Verify Installation
+
+```bash
+./verify-plugin.sh /path/to/adk-web
+```
+
+The script checks:
+- ✓ Plugin files copied correctly
+- ✓ `main.ts` has plugin imports
+- ✓ `styles.scss` includes widget styles
+- ✓ `chat.component.ts` uses CustomChatPanelComponent
+
+### Extract Widget Information
+
+```bash
+./extract-widgets.sh
+```
+
+Outputs detailed information about all available widgets.
+
+### Testing in Demo Mode
+
+ADK Web plugins include a demo mode with 20+ pre-built widget examples:
+
+1. Start ADK Web with plugins installed
+2. Click the **"Demo"** button in the chat interface
+3. Browse through all widget types and interactions
+4. Click "Demo" again to restore original messages
+
+## Uninstallation
+
+To remove the plugins:
+
+1. **Remove plugin files:**
+   ```bash
+   cd /path/to/adk-web
+   rm -rf src/app/plugins
+   ```
+
+2. **Restore from backup** (if needed):
+   ```bash
+   mv src/app/plugins.backup.[timestamp] src/app/plugins
+   mv src/main.ts.backup.[timestamp] src/main.ts
+   mv src/styles.scss.backup.[timestamp] src/styles.scss
+   ```
+
+3. **Manually remove imports** from:
+   - `src/main.ts` - Remove `getPluginProviders()` import and call
+   - `src/styles.scss` - Remove widget-base.scss import
+   - `src/app/components/chat/chat.component.ts` - Revert to `ChatPanelComponent`
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on:
+
+- Code of conduct
+- Development setup
+- Creating new widgets
+- Submitting pull requests
+- Coding standards
+
+### Quick Contribution Steps
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Make your changes with tests
+4. Commit with descriptive messages
+5. Push and create a pull request
+
+## Compatibility
+
+| Package | Version |
+|---------|---------|
+| ADK Web | 1.0.0+ |
+| Angular | 19.x |
+| Node.js | 18+ |
+| TypeScript | 5.x |
+
+## License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+
+**Copyright (c) 2025 HiHelloAI (www.hihelloai.com)**
+
+```
+Copyright 2025 HiHelloAI (www.hihelloai.com)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
+
+## Acknowledgments
+
+- **Built for [Google ADK Web](https://github.com/google/adk-web)** - This is a community plugin package, not an official Google project
+- Built with [Angular](https://angular.dev) framework
+- Styled with [Angular Material](https://material.angular.io)
+- Licensed under Apache 2.0 for compatibility with ADK Web
+
+## Resources
+
+- [ADK Web Documentation](https://github.com/google/adk-web)
+- [Widget System Guide](plugins/widgets/README.md)
+- [Contributing Guidelines](CONTRIBUTING.md)
+- [Issue Tracker](https://github.com/YOUR_USERNAME/adk-web-plugins/issues)
+
+## Support
+
+- **Bug Reports:** [GitHub Issues](https://github.com/YOUR_USERNAME/adk-web-plugins/issues)
+- **Questions:** [GitHub Discussions](https://github.com/YOUR_USERNAME/adk-web-plugins/discussions)
+- **Documentation:** See [Widget README](plugins/widgets/README.md)
+
+---
+
+Made with ❤️ for the ADK Web community

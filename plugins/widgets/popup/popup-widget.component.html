@@ -1,0 +1,74 @@
+<!--
+ Copyright 2025 HiHelloAI (www.hihelloai.com)
+-->
+
+<!-- Popup Widget Template -->
+@if (widget.inline) {
+  <!-- Inline popup (dropdown style) -->
+  <span class="widget-popup-trigger widget-popup-trigger--inline"
+        [attr.data-popup-id]="generateId()">
+    @if (widget.trigger.icon) {
+      <span class="widget-popup-trigger__icon">{{ widget.trigger.icon }}</span>
+    }
+    @if (widget.trigger.text) {
+      <span class="widget-popup-trigger__text">{{ widget.trigger.text }}</span>
+    }
+  </span>
+
+  <div class="widget-popup--inline"
+       [class.widget-popup--inline--right]="widget.alignment === 'right'"
+       [class.widget-popup--inline--center]="widget.alignment === 'center'"
+       [id]="generateId()">
+    @if (widget.title) {
+      <div class="widget-popup__header">
+        <h3 class="widget-popup__title">{{ widget.title }}</h3>
+      </div>
+    }
+    <div class="widget-popup__content">
+      <!-- RECURSIVE: Render nested widget -->
+      <app-widget-renderer [widget]="widget.content" [theme]="theme" (widgetAction)="widgetAction.emit($event)" />
+    </div>
+  </div>
+
+} @else {
+  <!-- Modal popup -->
+  <span class="widget-popup-trigger"
+        [class.widget-popup-trigger--icon-only]="widget.trigger.style === 'icon-only'"
+        [class.widget-popup-trigger--text-only]="widget.trigger.style === 'text-only'"
+        [class.widget-popup-trigger--button-style]="widget.trigger.style === 'button'"
+        [attr.data-popup-id]="getPopupId()"
+        (click)="onPopupOpen($event, getPopupId())">
+    @if (widget.trigger.icon) {
+      <span class="widget-popup-trigger__icon">{{ widget.trigger.icon }}</span>
+    }
+    @if (widget.trigger.text) {
+      <span class="widget-popup-trigger__text">{{ widget.trigger.text }}</span>
+    }
+    @if (widget.trigger.tooltip) {
+      <span class="widget-popup-trigger__tooltip">{{ widget.trigger.tooltip }}</span>
+    }
+  </span>
+
+  <div class="widget-popup-overlay" [id]="getPopupId()" (click)="onPopupClose($event, getPopupId())">
+    <div class="widget-popup" (click)="$event.stopPropagation()"
+         [class.widget-popup--small]="widget.size === 'small'"
+         [class.widget-popup--medium]="widget.size === 'medium' || !widget.size"
+         [class.widget-popup--large]="widget.size === 'large'"
+         [class.widget-popup--fullwidth]="widget.size === 'fullwidth'">
+      <div class="widget-popup__header">
+        <h2 class="widget-popup__title">{{ widget.title || '' }}</h2>
+        <button class="widget-popup__close"
+                aria-label="Close"
+                (click)="onPopupClose($event, getPopupId())">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M18 6L6 18M6 6l12 12" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="widget-popup__content">
+        <!-- RECURSIVE: Render nested widget -->
+        <app-widget-renderer [widget]="widget.content" [theme]="theme" (widgetAction)="widgetAction.emit($event)" />
+      </div>
+    </div>
+  </div>
+}

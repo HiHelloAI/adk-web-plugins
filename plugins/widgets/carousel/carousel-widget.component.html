@@ -1,0 +1,30 @@
+<div class="widget-carousel">
+  <div class="widget-carousel__slides">
+    @for (item of widget.items; track $index) {
+      <div class="widget-carousel__slide" [class.widget-carousel__slide--active]="$index === 0">
+        <img [src]="item.image" [alt]="item.title || ''" class="widget-carousel__image">
+        @if (item.title || item.caption) {
+          <div class="widget-carousel__caption">
+            @if (item.title) {
+              <h4 class="widget-carousel__title">{{ item.title }}</h4>
+            }
+            @if (item.caption) {
+              <p class="widget-carousel__text">{{ item.caption }}</p>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+  @if (widget.showArrows !== false) {
+    <button class="widget-carousel__arrow widget-carousel__arrow--prev">‹</button>
+    <button class="widget-carousel__arrow widget-carousel__arrow--next">›</button>
+  }
+  @if (widget.showDots !== false) {
+    <div class="widget-carousel__dots">
+      @for (item of widget.items; track $index) {
+        <button class="widget-carousel__dot" [class.widget-carousel__dot--active]="$index === 0"></button>
+      }
+    </div>
+  }
+</div>

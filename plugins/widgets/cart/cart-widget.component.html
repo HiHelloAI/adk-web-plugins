@@ -1,0 +1,191 @@
+<!--
+  @license
+  Copyright 2025 HiHelloAI (www.hihelloai.com)
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<div class="widget-root cart-widget" [class.cart-widget--compact]="widget().variant === 'compact'">
+
+  <!-- Title -->
+  <h3 *ngIf="widget().title" class="cart-widget__title">
+    {{ widget().title }}
+  </h3>
+
+  <!-- Empty Cart Message -->
+  <div *ngIf="widget().items.length === 0" class="cart-widget__empty">
+    <div class="cart-widget__empty-icon">🛒</div>
+    <p class="cart-widget__empty-message">
+      {{ widget().emptyMessage || 'Your cart is empty' }}
+    </p>
+    <button
+      *ngIf="widget().continueShoppingButton"
+      class="cart-widget__button cart-widget__button--secondary"
+      (click)="onContinueShopping()">
+      <span *ngIf="widget().continueShoppingButton?.icon" class="cart-widget__button-icon">
+        {{ widget().continueShoppingButton!.icon }}
+      </span>
+      {{ widget().continueShoppingButton!.text }}
+    </button>
+  </div>
+
+  <!-- Cart Items -->
+  <div *ngIf="widget().items.length > 0" class="cart-widget__items">
+    <div *ngFor="let item of widget().items" class="cart-widget__item">
+
+      <!-- Item Image -->
+      <div *ngIf="widget().showItemImages !== false && item.image" class="cart-widget__item-image">
+        <img [src]="item.image" [alt]="item.name" />
+      </div>
+
+      <!-- Item Details -->
+      <div class="cart-widget__item-details">
+        <h4 class="cart-widget__item-name">{{ item.name }}</h4>
+        <p *ngIf="item.description" class="cart-widget__item-description">
+          {{ item.description }}
+        </p>
+        <p *ngIf="item.metadata" class="cart-widget__item-metadata">
+          {{ getMetadataDisplay(item) }}
+        </p>
+        <p class="cart-widget__item-price">
+          {{ formatPrice(item.price, item.currency) }}
+        </p>
+
+        <!-- Quantity Controls -->
+        <div class="cart-widget__item-quantity">
+          <label class="cart-widget__item-quantity-label">Qty:</label>
+
+          <div *ngIf="canEditQuantity(item)" class="cart-widget__quantity-controls">
+            <button
+              class="cart-widget__quantity-btn"
+              [disabled]="item.quantity <= 1"
+              (click)="onQuantityChange(item, item.quantity - 1)">
+              −
+            </button>
+            <input
+              type="number"
+              class="cart-widget__quantity-input"
+              [value]="item.quantity"
+              [min]="1"
+              [max]="item.maxQuantity"
+              (change)="onQuantityChange(item, +$any($event.target).value)"
+              (input)="onQuantityChange(item, +$any($event.target).value)" />
+            <button
+              class="cart-widget__quantity-btn"
+              [disabled]="item.maxQuantity && item.quantity >= item.maxQuantity"
+              (click)="onQuantityChange(item, item.quantity + 1)">
+              +
+            </button>
+          </div>
+
+          <span *ngIf="!canEditQuantity(item)" class="cart-widget__quantity-static">
+            {{ item.quantity }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Item Right Column (Price + Remove) -->
+      <div class="cart-widget__item-right">
+        <div class="cart-widget__item-total">
+          {{ formatPrice(item.price * item.quantity, item.currency) }}
+        </div>
+        <button
+          *ngIf="canRemoveItem(item)"
+          class="cart-widget__item-remove"
+          (click)="onRemoveItem(item)"
+          title="Remove item">
+          ✕
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Summary -->
+  <div *ngIf="widget().items.length > 0" class="cart-widget__summary">
+
+    <!-- Subtotal -->
+    <div class="cart-widget__summary-row">
+      <span class="cart-widget__summary-label">Subtotal:</span>
+      <span class="cart-widget__summary-value">{{ formatPrice(getSubtotal()) }}</span>
+    </div>
+
+    <!-- Discount -->
+    <div *ngIf="widget().discount" class="cart-widget__summary-row cart-widget__summary-row--discount">
+      <span class="cart-widget__summary-label">
+        {{ widget().discount!.label || 'Discount' }}
+        <span *ngIf="widget().discount!.code" class="cart-widget__discount-code">
+          ({{ widget().discount!.code }})
+        </span>
+      </span>
+      <span class="cart-widget__summary-value">-{{ formatPrice(getDiscountAmount()) }}</span>
+    </div>
+
+    <!-- Shipping -->
+    <div *ngIf="widget().shipping" class="cart-widget__summary-row">
+      <span class="cart-widget__summary-label">
+        {{ widget().shipping!.label || 'Shipping' }}
+        <span *ngIf="widget().shipping!.method" class="cart-widget__shipping-method">
+          ({{ widget().shipping!.method }})
+        </span>
+      </span>
+      <span class="cart-widget__summary-value" [class.free]="widget().shipping!.free">
+        <span *ngIf="widget().shipping!.free">FREE</span>
+        <span *ngIf="!widget().shipping!.free">{{ formatPrice(getShippingAmount()) }}</span>
+      </span>
+    </div>
+
+    <!-- Tax -->
+    <div *ngIf="widget().tax" class="cart-widget__summary-row">
+      <span class="cart-widget__summary-label">
+        {{ widget().tax!.label || 'Tax' }}
+        <span *ngIf="widget().tax!.percentage" class="cart-widget__tax-percentage">
+          ({{ widget().tax!.percentage }}%)
+        </span>
+      </span>
+      <span class="cart-widget__summary-value">{{ formatPrice(getTaxAmount()) }}</span>
+    </div>
+
+    <!-- Total -->
+    <div class="cart-widget__summary-row cart-widget__summary-row--total">
+      <span class="cart-widget__summary-label">Total:</span>
+      <span class="cart-widget__summary-value">{{ formatPrice(getTotal()) }}</span>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div *ngIf="widget().items.length > 0" class="cart-widget__actions">
+    <button
+      *ngIf="widget().checkoutButton"
+      class="cart-widget__button cart-widget__button--primary"
+      [class.cart-widget__button--disabled]="widget().checkoutButton?.disabled"
+      [disabled]="widget().checkoutButton?.disabled"
+      (click)="onCheckout()">
+      <span *ngIf="widget().checkoutButton?.icon" class="cart-widget__button-icon">
+        {{ widget().checkoutButton!.icon }}
+      </span>
+      {{ widget().checkoutButton!.text }}
+    </button>
+
+    <button
+      *ngIf="widget().continueShoppingButton"
+      class="cart-widget__button cart-widget__button--secondary"
+      [class.cart-widget__button--disabled]="widget().continueShoppingButton?.disabled"
+      [disabled]="widget().continueShoppingButton?.disabled"
+      (click)="onContinueShopping()">
+      <span *ngIf="widget().continueShoppingButton?.icon" class="cart-widget__button-icon">
+        {{ widget().continueShoppingButton!.icon }}
+      </span>
+      {{ widget().continueShoppingButton!.text }}
+    </button>
+  </div>
+</div>

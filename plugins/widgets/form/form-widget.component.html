@@ -1,0 +1,133 @@
+<!--
+ Copyright 2025 HiHelloAI (www.hihelloai.com)
+-->
+
+<!-- Form Widget Template -->
+<div class="widget-form"
+     [class.widget-form--compact]="widget.layout === 'compact'"
+     [class.widget-form--wide]="widget.layout === 'wide'"
+     [class.widget-form--fullwidth]="widget.layout === 'fullwidth'"
+     [attr.data-theme]="theme">
+
+  <h2 class="widget-form__title">{{ widget.title }}</h2>
+
+  @if (widget.description) {
+    <p class="widget-form__description">{{ widget.description }}</p>
+  }
+
+  <form (submit)="onFormSubmit($event, widget)">
+    <div class="widget-form__fields">
+      @for (field of widget.fields; track field.name) {
+        <div class="widget-form__field">
+          <label class="widget-form__label"
+                 [class.widget-form__label--required]="field.required"
+                 [attr.for]="field.name">
+            {{ field.label }}
+          </label>
+
+          @switch (field.type) {
+            @case ('text') {
+              <input type="text"
+                     class="widget-form__input"
+                     [name]="field.name"
+                     [id]="field.name"
+                     [placeholder]="field.placeholder || ''"
+                     [required]="field.required"
+                     [value]="field.value || ''">
+            }
+            @case ('email') {
+              <input type="email"
+                     class="widget-form__input"
+                     [name]="field.name"
+                     [id]="field.name"
+                     [placeholder]="field.placeholder || ''"
+                     [required]="field.required"
+                     [value]="field.value || ''">
+            }
+            @case ('number') {
+              <input type="number"
+                     class="widget-form__input"
+                     [name]="field.name"
+                     [id]="field.name"
+                     [placeholder]="field.placeholder || ''"
+                     [required]="field.required"
+                     [value]="field.value || ''">
+            }
+            @case ('select') {
+              <select class="widget-form__select"
+                      [name]="field.name"
+                      [id]="field.name"
+                      [required]="field.required">
+                <option value="">{{ field.placeholder || 'Select...' }}</option>
+                @for (option of field.options; track option.value) {
+                  <option [value]="option.value"
+                          [selected]="field.value === option.value">
+                    {{ option.label }}
+                  </option>
+                }
+              </select>
+            }
+            @case ('textarea') {
+              <textarea class="widget-form__input widget-form__textarea"
+                        [name]="field.name"
+                        [id]="field.name"
+                        [placeholder]="field.placeholder || ''"
+                        [required]="field.required">{{ field.value || '' }}</textarea>
+            }
+            @case ('radio') {
+              <div class="widget-form__radio-group">
+                @for (option of field.options; track option.value; let isFirst = $first) {
+                  <div class="widget-form__radio-option">
+                    <input type="radio"
+                           [name]="field.name"
+                           [id]="field.name + '_' + option.value"
+                           [value]="option.value"
+                           [checked]="isFirst || field.value === option.value">
+                    <label [attr.for]="field.name + '_' + option.value">
+                      {{ option.label }}
+                    </label>
+                  </div>
+                }
+              </div>
+            }
+            @case ('checkbox') {
+              <div class="widget-form__checkbox-group">
+                @for (option of field.options; track option.value) {
+                  <div class="widget-form__checkbox-option">
+                    <input type="checkbox"
+                           [name]="field.name"
+                           [id]="field.name + '_' + option.value"
+                           [value]="option.value">
+                    <label [attr.for]="field.name + '_' + option.value">
+                      {{ option.label }}
+                    </label>
+                  </div>
+                }
+              </div>
+            }
+          }
+
+          @if (field.helperText) {
+            <span class="widget-form__helper-text">{{ field.helperText }}</span>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="widget-form__actions"
+         [class.widget-form__actions--left]="widget.actionsAlign === 'left'"
+         [class.widget-form__actions--center]="widget.actionsAlign === 'center'"
+         [class.widget-form__actions--right]="widget.actionsAlign === 'right' || !widget.actionsAlign"
+         [class.widget-form__actions--spread]="widget.actionsAlign === 'spread'">
+      @if (widget.cancelText) {
+        <button type="button" class="widget-form__cancel">{{ widget.cancelText }}</button>
+      }
+      @if (widget.showResetButton !== false) {
+        <button type="reset" class="widget-form__reset">{{ widget.resetText || 'Reset' }}</button>
+      }
+      <button type="submit" class="widget-form__submit">
+        {{ widget.submitText || 'Submit' }}
+      </button>
+    </div>
+  </form>
+</div>
