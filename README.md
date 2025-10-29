@@ -77,7 +77,15 @@ ADK Web Plugins is an external plugin package designed to enhance [ADK Web](http
 | **Text** | Rich HTML content, formatted text | - |
 | **Timeline** | Event history, progress tracking, chronology | - |
 
-View detailed widget documentation in the [Widget System README](plugins/widgets/README.md).
+> **📚 For comprehensive widget documentation, examples, and implementation guides, see the [Widget System README](plugins/widgets/README.md).**
+>
+> The Widget README includes:
+> - Complete JSON schemas for all 13 widget types
+> - Interactive examples with tabbed pricing, discounts, forms, and more
+> - Step-by-step guide for creating custom widgets
+> - Event handling system documentation
+> - Theme customization and CSS variables
+> - Demo mode with 20+ pre-built examples
 
 ## Installation
 
