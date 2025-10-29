@@ -178,107 +178,63 @@ If you prefer manual installation or need more control:
 
 ## Usage
 
-### Using Widgets in Your Agent
+### Instructing LLMs to Generate Widgets
 
-Widgets are sent as JSON strings from your backend agent. Here are examples in different languages:
+The most powerful way to use these widgets is by instructing your LLM (Large Language Model) to generate widget JSON when appropriate. Add instructions to your system prompt or agent configuration:
 
-#### Python Example
+#### Basic Approach
 
-```python
-from adk import Agent
-import json
+Include in your system prompt:
 
-class MyAgent(Agent):
-    def process(self, user_input: str):
-        # Create a pricing card widget
-        widget = {
-            "type": "pricing-cards",
-            "title": "Choose Your Plan",
-            "columns": 3,
-            "cards": [
-                {
-                    "id": "basic",
-                    "title": "Basic",
-                    "price": {
-                        "currency": "$",
-                        "amount": "9.99",
-                        "period": "/mo"
-                    },
-                    "features": [
-                        {"text": "10 GB Storage", "enabled": True},
-                        {"text": "Basic Support", "enabled": True}
-                    ],
-                    "cta": {"text": "Select Plan"}
-                }
-            ]
-        }
+> "When presenting pricing options, product listings, or subscription plans, format your response as a JSON widget using the 'pricing-cards' type. When collecting user information, use the 'form' widget type. When showing success/error messages, use the 'alert' widget type. Return ONLY the JSON widget without any markdown formatting."
 
-        return {
-            "role": "bot",
-            "text": json.dumps(widget)
-        }
+#### Detailed Widget Instructions
+
+For better results, provide specific widget schemas in your prompt:
+
+```
+Available Widgets:
+
+1. PRICING CARDS - Use for subscription plans, product tiers, pricing options
+   Format: {"type": "pricing-cards", "title": "...", "cards": [...]}
+
+2. FORMS - Use for collecting user input, surveys, registrations
+   Format: {"type": "form", "title": "...", "fields": [...]}
+
+3. ALERTS - Use for notifications, success/error messages, warnings
+   Format: {"type": "alert", "variant": "success|error|warning|info", "message": "..."}
+
+4. CART - Use for shopping carts, order summaries, checkout flows
+   Format: {"type": "cart", "items": [...], "total": ...}
+
+5. TABLES - Use for structured data, comparisons, data grids
+   Format: {"type": "table", "headers": [...], "rows": [...]}
+
+When the user's request matches a widget use case, respond with ONLY the JSON widget (no markdown code blocks).
 ```
 
-#### Java Example
+#### Example System Prompt
 
-```java
-import com.google.gson.Gson;
-import java.util.*;
+```
+You are a helpful assistant with access to interactive widgets. When appropriate:
 
-public class MyAgent extends Agent {
-    private final Gson gson = new Gson();
+- Show pricing with pricing-cards widget
+- Collect data with form widget
+- Display notifications with alert widget
+- Show shopping carts with cart widget
+- Present data tables with table widget
 
-    @Override
-    public Response process(String userInput) {
-        // Create a form widget
-        Map<String, Object> widget = Map.of(
-            "type", "form",
-            "title", "Contact Us",
-            "fields", List.of(
-                Map.of(
-                    "type", "text",
-                    "name", "name",
-                    "label", "Full Name",
-                    "required", true
-                ),
-                Map.of(
-                    "type", "email",
-                    "name", "email",
-                    "label", "Email Address",
-                    "required", true
-                )
-            ),
-            "submitText", "Send Message"
-        );
-
-        return Response.builder()
-            .content(gson.toJson(widget))
-            .build();
-    }
-}
+Return widget JSON directly without markdown formatting. The frontend will automatically detect and render valid JSON widgets.
 ```
 
-#### JavaScript/Node.js Example
+### How It Works
 
-```javascript
-class MyAgent {
-  process(userInput) {
-    // Create an alert widget
-    const widget = {
-      type: "alert",
-      variant: "success",
-      title: "Success!",
-      message: "Your operation completed successfully",
-      icon: "✅"
-    };
+1. **LLM generates widget JSON** based on the context and your instructions
+2. **Backend returns JSON string** in the message content
+3. **Frontend automatically detects** valid JSON that matches widget schemas
+4. **Widget renders** in place of plain text
 
-    return {
-      role: "bot",
-      text: JSON.stringify(widget)
-    };
-  }
-}
-```
+This approach allows your LLM to dynamically choose the best widget type based on the user's request, creating rich interactive experiences without hardcoding widget logic.
 
 ### Widget Examples
 
