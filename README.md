@@ -8,10 +8,36 @@
 
 <div align="center">
   <img src="assets/adk-web-plugins.gif" alt="ADK Web Plugins Demo" width="800"/>
-  <img src="assets/cart-widget.png" alt="ADK Web Plugins Demo" width="300"/>
   <p><em>Interactive widgets in action - Forms, Pricing Cards, Alerts, and more</em></p>
 </div>
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+  - [Custom UI Components](#custom-ui-components)
+  - [Interactive Widgets (14 total)](#interactive-widgets-14-total)
+- [Installation](#installation)
+  - [Prerequisites](#prerequisites)
+  - [Quick Start](#quick-start)
+  - [What the Installation Does](#what-the-installation-does)
+  - [Manual Installation](#manual-installation)
+- [Usage](#usage)
+  - [Using Widgets in Your Agent](#using-widgets-in-your-agent)
+  - [Widget Examples](#widget-examples)
+- [Project Structure](#project-structure)
+- [Configuration](#configuration)
+  - [Plugin Registry](#plugin-registry)
+  - [Widget Customization](#widget-customization)
+- [Troubleshooting](#troubleshooting)
+- [Verification & Testing](#verification--testing)
+- [Uninstallation](#uninstallation)
+- [Contributing](#contributing)
+- [Compatibility](#compatibility)
+- [Visual Showcase](#visual-showcase)
+- [Acknowledgments](#acknowledgments)
+- [Resources](#resources)
+- [Support](#support)
 
 ## Overview
 
@@ -53,17 +79,6 @@ ADK Web Plugins is an external plugin package designed to enhance [ADK Web](http
 
 View detailed widget documentation in the [Widget System README](plugins/widgets/README.md).
 
-## Visual Showcase
-
-### Pricing Cards with Tabs
-<img src="assets/pricing-cards-demo.gif" alt="Pricing Cards Widget" width="700"/>
-
-### Interactive Forms
-<img src="assets/form-demo.gif" alt="Form Widget" width="700"/>
-
-### Widget Gallery
-<img src="assets/widget-gallery.gif" alt="All Widgets Demo" width="700"/>
-
 ## Installation
 
 ### Prerequisites
@@ -72,11 +87,13 @@ View detailed widget documentation in the [Widget System README](plugins/widgets
 - A local installation of [ADK Web](https://github.com/google/adk-web)
 - Basic knowledge of Angular 19+ and TypeScript
 
+> **⚠️ Important:** This installation will add and modify files in your existing ADK Web project. It's strongly recommended to **backup your ADK Web directory** or **commit all changes to git** before proceeding with the installation.
+
 ### Quick Start
 
 1. **Clone this repository:**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/adk-web-plugins.git
+   git clone https://github.com/HiHelloAI/adk-web-plugins.git
    cd adk-web-plugins
    ```
 
@@ -574,27 +591,34 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 | Node.js | 18+ |
 | TypeScript | 5.x |
 
-## License
+## Visual Showcase
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+### Pricing Cards Simple
+<img src="assets/pricing-card-simple.png" alt="Pricing Cards Widget" width="300"/>
 
-**Copyright (c) 2025 HiHelloAI (www.hihelloai.com)**
+### Pricing Cards With Tabs
+<img src="assets/pricing-card-tabs.png" alt="Pricing Cards Widget" width="300"/>
 
-```
-Copyright 2025 HiHelloAI (www.hihelloai.com)
+### Pricing Cards With Image
+<img src="assets/pricing-card-image.png" alt="Pricing Cards Widget" width="300"/>
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+### Interactive Forms
+<img src="assets/form-widget.png" alt="Form Widget" width="300"/>
 
-    http://www.apache.org/licenses/LICENSE-2.0
+### Grid
+<img src="assets/grid.png" alt="Grid Widget" width="300"/>
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
+### Cart
+<img src="assets/cart-widget.png" alt="Cart Widget" width="300"/>
+
+### Timeline
+<img src="assets/timeline.png" alt="Timeline Widget" width="300"/>
+
+### Accordion
+<img src="assets/accordion.png" alt="Accordion Widget" width="300"/>
+
+### Action
+<img src="assets/action.png" alt="Action Widget" width="300"/>
 
 ## Acknowledgments
 
@@ -608,12 +632,12 @@ limitations under the License.
 - [ADK Web Documentation](https://github.com/google/adk-web)
 - [Widget System Guide](plugins/widgets/README.md)
 - [Contributing Guidelines](CONTRIBUTING.md)
-- [Issue Tracker](https://github.com/YOUR_USERNAME/adk-web-plugins/issues)
+- [Issue Tracker](https://github.com/HiHelloAI/adk-web-plugins/issues)
 
 ## Support
 
-- **Bug Reports:** [GitHub Issues](https://github.com/YOUR_USERNAME/adk-web-plugins/issues)
-- **Questions:** [GitHub Discussions](https://github.com/YOUR_USERNAME/adk-web-plugins/discussions)
+- **Bug Reports:** [GitHub Issues](https://github.com/HiHelloAI/adk-web-plugins/issues)
+- **Questions:** [GitHub Discussions](https://github.com/HiHelloAI/adk-web-plugins/discussions)
 - **Documentation:** See [Widget README](plugins/widgets/README.md)
 
 ---
