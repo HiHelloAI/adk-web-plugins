@@ -8,7 +8,7 @@
 
 <div align="center">
   <img src="assets/adk-web-plugins.gif" alt="ADK Web Plugins Demo" width="800"/>
-    <img src="assets/cart-widget.png" alt="ADK Web Plugins Demo" width="800"/>
+  <img src="assets/cart-widget.png" alt="ADK Web Plugins Demo" width="300"/>
   <p><em>Interactive widgets in action - Forms, Pricing Cards, Alerts, and more</em></p>
 </div>
 
